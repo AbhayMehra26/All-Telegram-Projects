@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Appointment Date & Time</title>
+</head>
+<body>
+
+    <h2>Select Appointment Date & Time</h2>
+
+    <form action="/appointment/save" method="post">
+        <label for="datetime">Select Date & Time:</label>
+        <input type="datetime-local" id="datetime" name="datetime" required><br><br>
+
+        <!-- Hidden fields for chatId and service name -->
+        <input type="hidden" name="chatId" th:value="${chatId}">
+        <input type="hidden" name="serviceName" th:value="${serviceName}">
+
+        <button type="submit">Confirm Booking</button>
+    </form>
+
+    <script>
+        // Restrict past dates & times
+        document.getElementById("datetime").min = new Date().toISOString().slice(0, 16);
+    </script>
+
+</body>
+</html>
