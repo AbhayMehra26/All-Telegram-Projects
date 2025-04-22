@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Appointment Date & Time</title>
+</head>
+<body>
+    <h2>Select Appointment Date & Time</h2>
+    <form action="/appointment/save" method="post">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+
+        <label for="time">Select Time:</label>
+        <input type="time" id="time" name="time" required><br><br>
+
+        <input type="hidden" name="chatId" th:value="${chatId}">
+        <input type="hidden" name="serviceName" th:value="${serviceName}">
+
+        <button type="submit">Confirm Booking</button>
+    </form>
+</body>
+</html>
