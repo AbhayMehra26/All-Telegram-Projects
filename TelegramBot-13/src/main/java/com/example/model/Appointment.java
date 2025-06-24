@@ -17,9 +17,13 @@ public class Appointment {
     private int reminderCount = 0;  // Default 0
     private int lastMessageId;  // Store last message ID for deletion
     private String chatId;
+    
+    
     // Constructors
     public Appointment() {}
- // ✅ Add this constructor for easier creation of appointments
+ 
+    
+    // ✅ Add this constructor for easier creation of appointments
     public Appointment(String chatId, String serviceName, LocalDateTime appointmentDateTime) {
         this.chatId = chatId;
         this.serviceName = serviceName;

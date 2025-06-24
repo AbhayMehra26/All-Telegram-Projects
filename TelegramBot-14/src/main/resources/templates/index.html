@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Appointment Booking</title>
+</head>
+<body>
+	<h1>Netlify new </h1> <br>
+    <h2>Book Your Appointment for <span th:text="${service}">Service</span></h2>
+
+    <form id="appointmentForm">
+        <input type="hidden" id="chatId" th:value="${chatId}" />
+        <input type="hidden" id="serviceName" th:value="${service}" />
+
+        <label for="datetime">Select Date and Time:</label><br>
+        <input type="datetime-local" id="datetime" name="datetime" required/><br><br>
+
+        <button type="submit">Book Appointment</button>
+    </form>
+
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const chatId = document.getElementById("chatId").value;
+            const serviceName = document.getElementById("serviceName").value;
+            const datetime = document.getElementById("datetime").value;
+
+            if (!datetime) {
+                alert("Please select date and time.");
+                return;
+            }
+
+            // POST data to backend API
+            fetch("/api/appointments", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    chatId: chatId,
+                    serviceName: serviceName,
+                    datetime: datetime
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("responseMessage").innerText = "Appointment booked successfully!";
+            })
+            .catch(error => {
+                document.getElementById("responseMessage").innerText = "Error booking appointment.";
+                console.error("Error:", error);
+            });
+        });
+    </script>
+</body>
+</html>

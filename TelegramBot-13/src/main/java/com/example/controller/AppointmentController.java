@@ -3,6 +3,8 @@ package com.example.controller;
 import com.example.model.Appointment;
 import com.example.repository.AppointmentRepository;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import java.time.LocalDateTime;
@@ -10,45 +12,47 @@ import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 @Controller
-@RequestMapping("date-time") // Corrected path
+@RequestMapping("date-time") // Path for appointment
 public class AppointmentController {
 
     private final AppointmentRepository appointmentRepository;
     private final TelegramBot telegramBot;
 
-    // Constructor Injection
     public AppointmentController(AppointmentRepository appointmentRepository, TelegramBot telegramBot) {
         this.appointmentRepository = appointmentRepository;
         this.telegramBot = telegramBot;
     }
 
-    // ✅ Show the Appointment Page
+    // ✅ Show Appointment Page (GET request)
     @GetMapping("/appointment")
-    public String showAppointmentPage() {
-        return "booking"; // Make sure booking.html is in /src/main/resources/templates or /static
+    public String showAppointmentPage(@RequestParam Long chatId, @RequestParam String serviceName, Model model) {
+        // Pass parameters to the HTML page
+        model.addAttribute("chatId", chatId);
+        model.addAttribute("serviceName", serviceName);
+        return "booking"; // This is the booking.html page
     }
 
-    // ✅ Handle Form Submission & Save Appointment
     @PostMapping("/submit-appointment")
-    public String submitAppointment(@RequestParam Map<String, String> params) {
+    @CrossOrigin(origins = "*") // Or specify GitHub origin if needed
+    public ResponseEntity<String> submitAppointment(@RequestParam Map<String, String> params) {
         try {
             Long chatId = Long.parseLong(params.get("chatId"));
-            String serviceName = params.get("service");
-            LocalDateTime appointmentDateTime = LocalDateTime.parse(params.get("dateTime"));
+            String serviceName = params.get("serviceName");
+            LocalDateTime appointmentDateTime = LocalDateTime.parse(params.get("datetime"));
 
-            // Save appointment in the database
             Appointment appointment = new Appointment(chatId.toString(), serviceName, appointmentDateTime);
             appointmentRepository.save(appointment);
 
-            // ✅ Send Confirmation Message to Telegram User
+            // Notify user on Telegram
             String message = "📅 Your appointment for *" + serviceName + "* is booked on *" + appointmentDateTime + "*.";
-            telegramBot.sendTextMessage(chatId, message);  
+            telegramBot.sendTextMessage(chatId, message);
 
-            return "confirmation"; // Return a confirmation page
+            return ResponseEntity.ok("Appointment booked successfully!");
 
-        } catch (NumberFormatException | DateTimeParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            return "error"; // Return an error page if parsing fails
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid data!");
         }
     }
+
 }

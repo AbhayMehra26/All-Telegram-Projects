@@ -232,13 +232,13 @@ public class TelegramBot extends TelegramLongPollingBot {
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
-        row1.add(InlineKeyboardButton.builder().text("🔧 AMC Service").callbackData("amc_service").build());
+        row1.add(InlineKeyboardButton.builder().text("1️⃣ AMC Service").callbackData("amc_service").build());
 
         List<InlineKeyboardButton> row2 = new ArrayList<>();
-        row2.add(InlineKeyboardButton.builder().text("💰 Paid Service").callbackData("paid_service").build());
+        row2.add(InlineKeyboardButton.builder().text("2️⃣ 💰 Paid Service").callbackData("paid_service").build());
 
         List<InlineKeyboardButton> row3 = new ArrayList<>();
-        row3.add(InlineKeyboardButton.builder().text("🆓 Free Service").callbackData("free_service").build());
+        row3.add(InlineKeyboardButton.builder().text("3️⃣ 🆓 Free Service").callbackData("free_service").build());
 
         keyboard.add(row1);
         keyboard.add(row2);

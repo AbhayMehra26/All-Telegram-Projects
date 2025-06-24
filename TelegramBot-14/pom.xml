@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.4</version>
+		<version>3.5.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>TelegramBot-13</artifactId>
+	<artifactId>TelegramBot-14</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TelegramBot-13</name>
+	<name>TelegramBot-14</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -97,9 +97,17 @@
     <version>4.0.2</version>  <!-- Required for Hibernate Validator -->
 </dependency>
 
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-thymeleaf</artifactId>
+</dependency>
+
+
     
 </dependencies>
 
+
+	
 	
 	<build>
 		<plugins>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Select Appointment Date & Time</title>
@@ -8,13 +8,12 @@
 
     <h2>Select Appointment Date & Time</h2>
 
-    <form action="/appointment/save" method="post">
+    <form id="appointmentForm" method="post">
         <label for="datetime">Select Date & Time:</label>
         <input type="datetime-local" id="datetime" name="datetime" required><br><br>
 
-        <!-- Hidden fields for chatId and service name -->
-        <input type="hidden" name="chatId" th:value="${chatId}">
-        <input type="hidden" name="serviceName" th:value="${serviceName}">
+        <input type="hidden" id="chatId" name="chatId">
+        <input type="hidden" id="serviceName" name="serviceName">
 
         <button type="submit">Confirm Booking</button>
     </form>
@@ -22,7 +21,20 @@
     <script>
         // Restrict past dates & times
         document.getElementById("datetime").min = new Date().toISOString().slice(0, 16);
-    </script>
+
+        // Read query params from URL
+        const params = new URLSearchParams(window.location.search);
+        document.getElementById("chatId").value = params.get("chatId");
+        document.getElementById("serviceName").value = params.get("serviceName");
+
+        // Set form action dynamically
+        const form = document.getElementById("appointmentForm");
+       // form.action = "https://your-ngrok-url.ngrok-free.app/date-time/submit-appointment"; // ✅ REPLACE with your actual backend URL
+		
+	   form.action = "https://16a4-2409-4050-2d4a-f2f8.ngrok-free.app/submit-appointment"; // ✅ REPLACE with your actual backend URL
+
+		
+		  </script>
 
 </body>
 </html>

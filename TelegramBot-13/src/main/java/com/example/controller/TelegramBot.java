@@ -35,6 +35,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private UserService userService;
+    
+    
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     private Map<Long, String> userState = new HashMap<>();
@@ -75,6 +77,7 @@ public class TelegramBot extends TelegramLongPollingBot {
          // Track last user activity
             userLastActiveTime.put(chatId, System.currentTimeMillis());
             addMessageId(chatId,messageId);
+           
             switch (callbackData) {
                 case "create_account":
                     tempUserData.put(chatId, new UserData());
@@ -256,16 +259,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+    
+  /*  
     private void sendAppointmentLink(Long chatId, String serviceName) {
     	//String bookingUrl = "https://your-public-server.com/date-time/appointment?chatId=" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
     	//String bookingUrl = "http://localhost:8080/date-time/appointment?chatId=" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
     // String bookingUrl = "https://www.google.com" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
     	//String bookingUrl = "https://random-id.ngrok-free.app/date-time/appointment?chatId=" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
     //	String bookingUrl = "https://your-ngrok-id.ngrok-free.app/date-time/appointment?chatId=" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
-    	String bookingUrl = "https://16a4-2409-4050-2d4a-f2f8-f94d-e299-349b-5.ngrok-free.app/date-time/appointment?chatId=" 
+   
+    	// 	String bookingUrl = "https://16a4-2409-4050-2d4a-f2f8-f94d-e299-349b-5.ngrok-free.app/date-time/appointment?chatId=" 
+    //            + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
+    	
+    
+    	String bookingUrl = "https://prosourabh.github.io/JustForTest/datePicker.html?chatId="
                 + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
-
-        SendMessage message = new SendMessage();
+    	
+    	SendMessage message = new SendMessage();
         message.setChatId(chatId.toString());
         message.setParseMode("HTML");
         message.setText("📅 Click <a href=\"" + bookingUrl + "\">here</a> to book your appointment for " + serviceName + ".");
@@ -278,7 +288,24 @@ public class TelegramBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+*/
+    private void sendAppointmentLink(Long chatId, String serviceName) {
+        // Correct link that matches the GET mapping in the controller
+       // String bookingUrl = "http://localhost:8080/date-time/appointment?chatId=" + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
+        String bookingUrl = "https://prosourabh.github.io/JustForTest/datePicker.html?chatId="
+                + chatId + "&serviceName=" + serviceName.replace(" ", "%20");
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId.toString());
+        message.setParseMode("HTML");
+        message.setText("📅 Click <a href=\"" + bookingUrl + "\">here</a> to book your appointment for " + serviceName + ".");
+        try {
+            execute(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    
     private void startReminderTimer(Long chatId) {
     	
     	// This line tries to get the number of reminders sent to a user (by their chatId).
@@ -366,6 +393,52 @@ public class TelegramBot extends TelegramLongPollingBot {
         // Save task to map
        reminderTasks.put(chatId, scheduledTask);
     }
+    
+    /*
+    private void startReminderTimer(Long chatId) {
+        reminderCount.put(chatId, 0); // Reset reminder counter
+
+        // Cancel previous task if already running
+        if (reminderTasks.containsKey(chatId)) {
+            reminderTasks.get(chatId).cancel(true);
+            reminderTasks.remove(chatId);
+        }
+
+        ScheduledFuture<?> scheduledTask = scheduler.scheduleAtFixedRate(() -> {
+            int count = reminderCount.getOrDefault(chatId, 0);
+            long lastActive = userLastActiveTime.getOrDefault(chatId, 0L);
+            long currentTime = System.currentTimeMillis();
+
+            // Check if 30 seconds of inactivity has passed
+            if (currentTime - lastActive >= 30000) {
+                if (count < 3) {
+                    sendTextMessage(chatId, "⏰ Just a reminder! Please continue your activity or respond.");
+                    reminderCount.put(chatId, count + 1);
+                } else {
+                    sendTextMessage(chatId, "🔁 Session timed out due to inactivity. Starting over...");
+                    
+                    // Reset user session data
+                    userState.remove(chatId);
+                    tempUserData.remove(chatId);
+                    reminderCount.remove(chatId);
+                    userLastActiveTime.remove(chatId);
+
+                    // Clear messages
+                    deletePreviousMessages(chatId);
+
+                    // Restart flow
+                    sendTextMessage(chatId, "Hi dear, please send your name.");
+                    userState.put(chatId, "AWAITING_NAME");
+                    reminderCount.put(chatId, 0);
+                    userLastActiveTime.put(chatId, System.currentTimeMillis());
+                }
+            }
+        }, 30, 30, TimeUnit.SECONDS); // delay 30s, repeat every 30s
+
+        reminderTasks.put(chatId, scheduledTask); // Save reference to cancel later
+    }*/
+
+    
    
     private void addMessageId(Long chatId, Integer messageId) {
         userMessageIds.putIfAbsent(chatId, new ArrayList<>());
